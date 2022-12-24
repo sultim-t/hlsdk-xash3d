@@ -1350,6 +1350,11 @@ This version is used by Monsters.
 */
 void CBaseEntity::FireBullets( ULONG cShots, Vector vecSrc, Vector vecDirShooting, Vector vecSpread, float flDistance, int iBulletType, int iTracerFreq, int iDamage, entvars_t *pevAttacker )
 {
+#if HL1RT_HACKS
+	// always spawn many particles to illuminate scene
+	iTracerFreq = 1;
+#endif
+
 	static int tracerCount;
 	int tracer;
 	TraceResult tr;
