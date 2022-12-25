@@ -2225,6 +2225,13 @@ void CBasePlayer::CheckSuitUpdate()
 	int isentence = 0;
 	int isearch = m_iSuitPlayNext;
 
+#if HL1RT_HACKS
+	{
+		bool hasSuit = !!( pev->weapons & ( 1u << WEAPON_SUIT ) );
+		CVAR_SET_FLOAT( "_rt_labcoat", hasSuit ? 0 : 1 );
+	}
+#endif
+
 	// Ignore suit updates if no suit
 	if( !( pev->weapons & ( 1 << WEAPON_SUIT ) ) )
 		return;
