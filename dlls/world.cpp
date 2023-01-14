@@ -619,6 +619,47 @@ void CWorld::Precache( void )
 	{
 		ALERT( at_aiconsole, "Chapter title: %s\n", STRING( pev->netname ) );
 		CBaseEntity *pEntity = CBaseEntity::Create( "env_message", g_vecZero, g_vecZero, NULL );
+
+#if HL1RT_HACKS
+		if( pEntity )
+		{
+			// use chapter logo instead of text
+            const char* allowed[] =
+            {
+                "C2A4TITLE2",
+                "C2A5TITLE",
+                "C3A1TITLE",
+                "C3A2TITLE",
+                "C4A1ATITLE",
+                "C4A1TITLE",
+                "C4A2TITLE",
+                "C4A3TITLE",
+                "CR27",
+                "C0A1TITLE",
+                "C1A1TITLE",
+                "C1A2TITLE",
+                "C1A3TITLE",
+                "C1A4TITLE",
+                "C2A1TITLE",
+                "C2A2TITLE",
+                "C2A3TITLE",
+                "C2A4TITLE1",
+            };
+
+			const char* chapter = STRING(pev->netname);
+			for (const char* a : allowed)
+			{
+				if (strcmp(chapter, a) == 0)
+				{
+					CVAR_SET_STRING("_rt_chapter", chapter);
+					pEntity = nullptr;
+
+					break;
+				}
+			}
+		}
+#endif
+
 		if( pEntity )
 		{
 			pEntity->SetThink( &CBaseEntity::SUB_CallUseToggle );
