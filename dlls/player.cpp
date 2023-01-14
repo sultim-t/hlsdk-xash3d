@@ -2509,6 +2509,11 @@ void CBasePlayer::UpdatePlayerSound( void )
 	//ALERT( at_console, "%d/%d\n", iVolume, m_iTargetVolume );
 }
 
+#if HL1RT_HACKS
+extern bool rt_playchaptersound;
+static float rt_chaptersound_begin = -1;
+#endif
+
 void CBasePlayer::PostThink()
 {
 	if( g_fGameOver )
@@ -2516,6 +2521,20 @@ void CBasePlayer::PostThink()
 
 	if( !IsAlive() )
 		goto pt_end;
+
+#if HL1RT_HACKS
+	if(rt_playchaptersound)
+	{
+		rt_chaptersound_begin = gpGlobals->time + 2.9f;
+		rt_playchaptersound = false;
+	}
+
+	if (rt_chaptersound_begin >= 0.0f && gpGlobals->time > rt_chaptersound_begin)
+	{
+		EMIT_SOUND(ENT(pev), CHAN_STATIC, "plats/bigstop1.wav", 1.0f, ATTN_NONE);
+		rt_chaptersound_begin = -1;
+	}
+#endif
 
 	// Handle Tank controlling
 	if( m_pTank != 0 )

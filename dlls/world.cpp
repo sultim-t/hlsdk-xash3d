@@ -456,6 +456,10 @@ void CWorld::Spawn( void )
 	Precache();
 }
 
+#if HL1RT_HACKS
+bool rt_playchaptersound = false;
+#endif
+
 void CWorld::Precache( void )
 {
 	g_pLastSpawn = NULL;
@@ -653,6 +657,9 @@ void CWorld::Precache( void )
 				{
 					CVAR_SET_STRING("_rt_chapter", chapter);
 					pEntity = nullptr;
+
+					PRECACHE_SOUND("plats/bigstop1.wav");
+					rt_playchaptersound = true;
 
 					break;
 				}
