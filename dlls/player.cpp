@@ -2226,6 +2226,7 @@ void CBasePlayer::CheckSuitUpdate()
 	int isearch = m_iSuitPlayNext;
 
 #if HL1RT_HACKS
+    if( IsAlive() )
 	{
 		bool hasSuit = !!( pev->weapons & ( 1u << WEAPON_SUIT ) );
 		CVAR_SET_FLOAT( "_rt_labcoat", hasSuit ? 0 : 1 );
