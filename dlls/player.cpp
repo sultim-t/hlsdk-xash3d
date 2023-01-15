@@ -2510,8 +2510,10 @@ void CBasePlayer::UpdatePlayerSound( void )
 }
 
 #if HL1RT_HACKS
-extern bool rt_playchaptersound;
-static float rt_chaptersound_begin = -1;
+extern bool rt_showchapterlogo;
+
+static float rt_chaptertime_sound = -1;
+static float rt_chaptertime_image = -1;
 #endif
 
 void CBasePlayer::PostThink()
@@ -2523,16 +2525,23 @@ void CBasePlayer::PostThink()
 		goto pt_end;
 
 #if HL1RT_HACKS
-	if(rt_playchaptersound)
+	if(rt_showchapterlogo)
 	{
-		rt_chaptersound_begin = gpGlobals->time + 2.9f;
-		rt_playchaptersound = false;
+		rt_chaptertime_sound = gpGlobals->time + 2.9f;
+		rt_chaptertime_image = gpGlobals->time + 3.0f;
+		rt_showchapterlogo = false;
 	}
 
-	if (rt_chaptersound_begin >= 0.0f && gpGlobals->time > rt_chaptersound_begin)
+	if (rt_chaptertime_sound >= 0.0f && gpGlobals->time > rt_chaptertime_sound)
 	{
 		EMIT_SOUND(ENT(pev), CHAN_STATIC, "plats/bigstop1.wav", 1.0f, ATTN_NONE);
-		rt_chaptersound_begin = -1;
+		rt_chaptertime_sound = -1;
+	}
+
+	if (rt_chaptertime_image >= 0.0f && gpGlobals->time > rt_chaptertime_image)
+	{
+		CVAR_SET_FLOAT("_rt_chaptershow", 1);
+		rt_chaptertime_image = -1;
 	}
 #endif
 
