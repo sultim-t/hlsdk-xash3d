@@ -564,6 +564,14 @@ void V_CalcNormalRefdef( struct ref_params_s *pparams )
 			pparams->vieworg[i] += -ofs[2] * camForward[i];
 		}
 	}
+#if HL1RT_HACKS
+    else
+    {
+		camAngles[PITCH] = angles[PITCH];
+		camAngles[YAW] = 0;
+		camAngles[ROLL] = 0;
+	}
+#endif
 
 	// Give gun our viewangles
 	if( pparams->health <= 0 )
