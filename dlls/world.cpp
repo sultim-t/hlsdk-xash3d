@@ -619,6 +619,10 @@ void CWorld::Precache( void )
 	// g-cont. moved here to right restore global WaveHeight on save\restore level
 	CVAR_SET_FLOAT( "sv_wateramp", pev->scale );
 
+#if HL1RT_HACKS
+	CVAR_SET_STRING("_rt_chapter", "");
+#endif
+
 	if( pev->netname )
 	{
 		ALERT( at_aiconsole, "Chapter title: %s\n", STRING( pev->netname ) );
@@ -752,7 +756,7 @@ void CWorld::ShowChapterLogo()
         "C4A1TITLE",
         "C4A2TITLE",
         "C4A3TITLE",
-        "CR27",
+        // "CR27",
         "C0A1TITLE",
         "C1A1TITLE",
         "C1A2TITLE",
