@@ -269,9 +269,17 @@ void CController::HandleAnimEvent( MonsterEvent_t *pEvent )
 			MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
 				WRITE_BYTE( TE_ELIGHT );
 				WRITE_SHORT( entindex() + 0x1000 );		// entity, attachment
+#if !HL1RT_HACKS
 				WRITE_COORD( vecStart.x );		// origin
 				WRITE_COORD( vecStart.y );
 				WRITE_COORD( vecStart.z );
+#else
+				// opened head
+				Vector offsettedOrigin = vecStart + gpGlobals->v_up * 64;
+				WRITE_COORD( offsettedOrigin.x );	// origin
+				WRITE_COORD( offsettedOrigin.y );
+				WRITE_COORD( offsettedOrigin.z );
+#endif
 				WRITE_COORD( 1 );	// radius
 				WRITE_BYTE( 255 );	// R
 				WRITE_BYTE( 192 );	// G
@@ -847,6 +855,7 @@ void CController::RunAI( void )
 		GetAttachment( i + 2, vecStart, angleGun );
 		UTIL_SetOrigin( m_pBall[i]->pev, vecStart );
 
+#if !HL1RT_HACKS
 		MESSAGE_BEGIN( MSG_BROADCAST, SVC_TEMPENTITY );
 			WRITE_BYTE( TE_ELIGHT );
 			WRITE_SHORT( entindex() + 0x1000 * ( i + 3 ) );		// entity, attachment
@@ -860,6 +869,10 @@ void CController::RunAI( void )
 			WRITE_BYTE( 5 );	// life * 10
 			WRITE_COORD( 0 ); // decay
 		MESSAGE_END();
+#else
+		// disabled: RunAI is not called frequently enough (each 0.1 seconds),
+		// so it jitters too noticeably :(
+#endif
 	}
 }
 
@@ -1170,9 +1183,16 @@ void CControllerHeadBall::HuntThink( void )
 		WRITE_COORD( pev->origin.y );
 		WRITE_COORD( pev->origin.z );
 		WRITE_COORD( pev->renderamt / 16 );	// radius
+#if !HL1RT_HACKS
 		WRITE_BYTE( 255 );	// R
 		WRITE_BYTE( 255 );	// G
 		WRITE_BYTE( 255 );	// B
+#else
+	    // projectile
+		WRITE_BYTE( 255 );	// R
+		WRITE_BYTE( 200 );	// G
+		WRITE_BYTE( 90 );	// B
+#endif
 		WRITE_BYTE( 2 );	// life * 10
 		WRITE_COORD( 0 ); // decay
 	MESSAGE_END();
