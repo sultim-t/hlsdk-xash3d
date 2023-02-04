@@ -349,19 +349,32 @@ void CISlave::HandleAnimEvent( MonsterEvent_t *pEvent )
 				pev->framerate = 1.5;
 
 			UTIL_MakeAimVectors( pev->angles );
-
+			
+#if !HL1RT_HACKS
 			if( m_iBeams == 0 )
 			{
 				Vector vecSrc = pev->origin + gpGlobals->v_forward * 2;
+#else
+            // fixing post attack lights :(
+            if( m_iBeams == 0 && m_iTaskStatus != TASKSTATUS_COMPLETE)
+            {
+				Vector vecSrc = pev->origin + gpGlobals->v_forward * 48 + gpGlobals->v_up * 48;
+#endif
 				MESSAGE_BEGIN( MSG_PVS, SVC_TEMPENTITY, vecSrc );
 					WRITE_BYTE( TE_DLIGHT );
 					WRITE_COORD( vecSrc.x );	// X
 					WRITE_COORD( vecSrc.y );	// Y
 					WRITE_COORD( vecSrc.z );	// Z
 					WRITE_BYTE( 12 );		// radius * 0.1
+#if !HL1RT_HACKS
 					WRITE_BYTE( 255 );		// r
 					WRITE_BYTE( 180 );		// g
 					WRITE_BYTE( 96 );		// b
+#else
+					WRITE_BYTE( 15 );		// r
+					WRITE_BYTE( 64 );		// g
+					WRITE_BYTE( 10 );		// b
+#endif
 					WRITE_BYTE( 20 / pev->framerate );		// time * 10
 					WRITE_BYTE( 0 );		// decay * 0.1
 				MESSAGE_END();
