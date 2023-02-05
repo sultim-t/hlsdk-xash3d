@@ -2511,6 +2511,7 @@ void CBasePlayer::UpdatePlayerSound( void )
 
 #if HL1RT_HACKS
 extern bool rt_showchapterlogo;
+extern bool rt_showlambdacore;
 
 static float rt_chaptertime_sound = -1;
 static float rt_chaptertime_image = -1;
@@ -2527,9 +2528,31 @@ void CBasePlayer::PostThink()
 #if HL1RT_HACKS
 	if(rt_showchapterlogo)
 	{
-		rt_chaptertime_sound = gpGlobals->time + 2.9f;
-		rt_chaptertime_image = gpGlobals->time + 3.0f;
-		rt_showchapterlogo = false;
+		// just show after level start
+		if (!rt_showlambdacore)
+		{
+			rt_chaptertime_sound = gpGlobals->time + 2.9f;
+			rt_chaptertime_image = gpGlobals->time + 3.0f;
+			rt_showchapterlogo = false;
+		}
+		else
+		{
+			// stop any original music
+			CLIENT_COMMAND(edict(), "cd stop\n");
+
+			// keep checking the camera pos: if moving down with a lift
+			float z = pev->origin.z + pev->view_ofs.z;
+
+			if (z < 2000)
+			{
+				// start music
+				CLIENT_COMMAND(edict(), "cd play rt/Project_Borealis_OST_Threatening_Domain.mp3\n");
+
+				// sharp sound in the music track starts here
+				rt_chaptertime_image = gpGlobals->time + 5.6f;
+				rt_showchapterlogo = false;
+			}
+		}
 	}
 
 	if (rt_chaptertime_sound >= 0.0f && gpGlobals->time > rt_chaptertime_sound)

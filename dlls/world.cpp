@@ -456,10 +456,6 @@ void CWorld::Spawn( void )
 	Precache();
 }
 
-#if HL1RT_HACKS
-bool rt_showchapterlogo = false;
-#endif
-
 void CWorld::Precache( void )
 {
 	g_pLastSpawn = NULL;
@@ -627,7 +623,6 @@ void CWorld::Precache( void )
 	{
 		ALERT( at_aiconsole, "Chapter title: %s\n", STRING( pev->netname ) );
 		CBaseEntity *pEntity = CBaseEntity::Create( "env_message", g_vecZero, g_vecZero, NULL );
-		
 		if( pEntity )
 		{
 #if !HL1RT_HACKS
@@ -741,9 +736,13 @@ void CWorld::KeyValue( KeyValueData *pkvd )
 }
 
 #if HL1RT_HACKS
+bool rt_showchapterlogo = false;
+bool rt_showlambdacore = false;
+
 void CWorld::ShowChapterLogo()
 {
     rt_showchapterlogo = false;
+	rt_showlambdacore = false;
 
     // use chapter logo instead of text
     const char* allowed[] =
@@ -768,18 +767,23 @@ void CWorld::ShowChapterLogo()
         "C2A4TITLE1",
     };
 
-	const char* chapter = CVAR_GET_STRING("_rt_chapter");
-	if (chapter)
-	{
-		for (const char* a : allowed)
-		{
-			if (strcmp(chapter, a) == 0)
-			{
-				rt_showchapterlogo = true;
-				break;
-			}
-		}
-	}
+    const char* chapter = CVAR_GET_STRING("_rt_chapter");
+    if (chapter)
+    {
+        for (const char* a : allowed)
+        {
+            if (strcmp(chapter, a) == 0)
+            {
+                rt_showchapterlogo = true;
+                break;
+            }
+        }
+    }
+
+    if (rt_showchapterlogo && strcmp(chapter, "C3A2TITLE") == 0)
+    {
+		rt_showlambdacore = true;
+    }
 
     // use old chapter logo, if not found
     if (!rt_showchapterlogo)
