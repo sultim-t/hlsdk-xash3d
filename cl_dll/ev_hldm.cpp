@@ -1456,9 +1456,15 @@ void EV_EgonFire( event_args_t *args )
 
 			int iBeamModelIndex = gEngfuncs.pEventAPI->EV_FindModelIndex( EGON_BEAM_SPRITE );
 
+#if !HL1RT_HACKS
 			float r = 50.0f;
 			float g = 50.0f;
 			float b = 125.0f;
+#else
+			float r = 102;
+			float g = 102;
+			float b = 255;
+#endif
 
 			// if( IEngineStudio.IsHardware() )
 			{
